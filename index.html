@@ -1,0 +1,161 @@
+<!DOCTYPE html>  
+<html lang="zh-CN"> 
+<head>  
+<meta charset="utf-8">
+	<title>Player Service</title>
+	<link rel="stylesheet" href="template">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<style>  
+
+/*字体-start*/
+	@font-face{
+		font-family: "fontfile"; /* 自定义字体引用名称 */
+		src: url('/upload/HarmonyOS_Sans_SC_Regular.ttf');
+		/* 字体文件链接或路径 */
+	}
+  *{
+    font-family: "fontfile" !important;
+		/* 你即将使用的字体，输入对应字体的 font-family 值即可生效 */
+	  /* "!important" 为强制替换全局字体 */
+	}
+	/*字体-end*/
+
+.modal {  
+    display: none; /* 默认隐藏 */  
+    position: fixed; /* 固定定位 */  
+    z-index: 1; /* 置于顶层 */  
+    left: 0;  
+    top: 0;  
+    width: 100%; /* 宽度占满整个屏幕 */  
+    height: 100%; /* 高度占满整个屏幕 */  
+    overflow: auto; /* 如果内容超出屏幕高度，允许滚动 */  
+    background-color: rgba(0, 0, 0, 0.5); /* 半透明黑色背景 */  
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5); /* 可选：增加内部阴影来模拟磨砂边缘 */  
+  }  
+
+  .download-button {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #aaa; 
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+
+	  .download-button2 {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #2e8b57; 
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 5px;
+    }
+
+  .modal-content {  
+    background-color: #fefefe;  
+    margin: 5% auto; /* 15% 顶部距离，水平居中 */  
+    padding: 20px;  
+    border: 1px solid #ccc; /* 边框颜色可以调整以匹配磨砂效果 */  
+    width: 80%; /* 弹窗宽度 */  
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 外部阴影增加立体感 */  
+    border-radius: 8px; /* 圆角边框增加美观 */  
+  }  
+  
+  /* 关闭按钮样式 */  
+  .close {  
+    color: #aaa;  
+    float: right;  
+    font-size: 28px;  
+    font-weight: bold;  
+  }  
+  
+  .close:hover,  
+  .close:focus {  
+    color: black;  
+    text-decoration: none;  
+    cursor: pointer;  
+  }  
+</style>  
+</head>  
+<body>  
+  
+<!-- 弹窗结构 -->  
+<div id="myModal" class="modal">  
+  <div class="modal-content">  
+    <!-- <span class="close">&times;</span>   -->
+    <center> <font size="5" color="black">访问网站前需要同意《Player用户守则&服务条款》</font> </center><br> <br>
+	<font size="3" color="black">1.	不允许向我们的工作人员发送侮辱性话语。</font> <br>
+	<font size="3" color="black">2.	只有在我们的网站或KOOK服务器上找到的Player服务才是正确的，如果您在其它地方使用了错误的Player服务，我们概不负责。</font> <br>
+	<font size="3" color="black">3.	所有Player虚拟产品不支持退货、换货、退款，如果您购买产品由于自己的原因发生了错误，例如：买错了等，我们和商家概不负责。</font> <br>
+	<font size="3" color="black">4.	如果商家或我们发售的虚拟产品确实存在错误，如：打不开（除非是由于您的网络问题而打不开）等，允许您与我们或商家理论，我们或商家会尽力帮您解决，如果实在解决不了，我们会退款，但您需要删除我们或商家发售给您的虚拟产品。</font> <br>
+	<font size="3" color="black">5.	请合法使用我们的成果，仅限免费个人使用，如果需要商业使用，请付费。面议。</font> <br>
+	<font size="3" color="black">6(暂未生效).	不允许您将我们给予您在某计划权限给别人使用，否则将处以50.00 CNY以上100.00 CNY以下罚款。</font> <br>
+	<font size="3" color="black">7(暂未生效).	请认准我们的商标Player™。</font> <br>
+	<font size="3" color="black">8.	以后该守则可能还会更新其余内容，如有不足请发邮箱给ffuunnyaky@163.com给予反馈，请随时关注Player官网守则变化。</font> <br>
+	<font size="3" color="black">9.	不允许违法中华人民共和国法律。</font> <br>
+	<font size="3" color="black">10.	Player官方我的世界Java版服务器开放啦！官方服务器的基本游玩内容完全免费，但部分官方的高级内容或玩家自营的内容可能需要付费。</font> <br>
+	<font size="3" color="black">11.	Player官方网站和Player官方MC-JAVA服务器部分时间会关闭，无需紧张。</font> <br> <br>
+    <!-- <button onclick="acceptAgreement()">同意</button>   --><center> 
+	<a class="download-button2" onclick="acceptAgreement()"">同意</a> <!-- 添加了下载按钮 -->
+	<a class="download-button" href="https://www.xm233.cn/start">不同意</a>
+	 </center>
+
+  </div>  
+</div>  
+  
+<script>  
+  // 页面加载时显示弹窗  
+  window.onload = function() {  
+    document.getElementById("myModal").style.display = "block";  
+  };  
+  
+  // 关闭弹窗的函数  
+  function closeModal() {  
+    document.getElementById("myModal").style.display = "none";  
+  }  
+  
+  // 接受协议后关闭弹窗的函数  
+  function acceptAgreement() {  
+    // 这里可以添加代码来处理用户接受协议后的逻辑  
+    // 比如，设置一个Cookie或localStorage来记录用户已接受协议  
+    // 但为了示例简洁，这里只关闭弹窗  
+    closeModal();  
+  }  
+  
+  // 监听关闭按钮的点击事件  
+  var span = document.getElementsByClassName("close")[0];  
+  span.onclick = function() {  
+    closeModal();  
+  }  
+  
+//   // 用户点击弹窗外部区域时关闭弹窗（可选）  
+//   window.onclick = function(event) {  
+//     var modal = document.getElementById("myModal");  
+//     if (event.target == modal) {  
+//       closeModal();  
+//     }  
+//   }  
+</script>  
+  <div class="bg-img"></div>
+	<header>Player Service</header>
+	<main>
+		<h1>欢迎来到Player Service官网！</h1>
+		<p>这里将会展示Player团队的成果（已对外部开放的）。</p>
+		<a href="/about">关于Player团队</a>
+		<br>
+		<a href="/download">下载</a>
+		<br>
+		<a href="/call">联系我们</a>
+		<br>
+		<a href="/ad">广告</a>
+		<br>
+		<a href="/createweb">在Player建站</a>
+		<br>
+		<a href="/achievement">成果</a>
+		<br> <br> <br> <br>
+		<a href="https://beian.miit.gov.cn" target="_blank">浙ICP备2024075519号-1</a>
+	</main>
+</body>  
+</html>
